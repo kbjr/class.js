@@ -8,7 +8,8 @@ Dual licensed under MIT and GPL
 
 h2. Basic Example
 
-<pre><code>Class('Animal', {
+<pre><code>// A general animal class
+Class('Animal', {
     
     construct: function(name) {
         this.name = name;
@@ -20,6 +21,7 @@ h2. Basic Example
     
 });
 
+// Create a class for making people
 Class('Person').extends('Animal', {
     
     speak: function(sayWhat) {
@@ -28,8 +30,11 @@ Class('Person').extends('Animal', {
     
 });
 
+// Create an instance of our person class
 var james = new Person('James');
-james.makeNoise('Hello, World');</code></pre>
+
+// And make them talk
+james.speak('Hello, World');</code></pre>
 
 h2. Extending Classes
 
