@@ -2,7 +2,7 @@
  * A simple JavaScript class system
  *
  * @author     James Brumond
- * @version    0.1.1
+ * @version    0.1.2
  * @copyright  Copyright 2011 James Brumond
  * @license    Dual licensed under MIT and GPL
  */
@@ -127,7 +127,7 @@
 	
 	var TempClass = function(name) {
 		this.extends = function(parent, constructor) {
-			_global[name] = createClass(name, parent, constructor);
+			return assignClass(name, createClass(name, parent, constructor));
 		};
 	};
 
@@ -138,7 +138,7 @@
 		if (arguments.length === 1) {
 			return new TempClass(name);
 		} else {
-			_global[name] = createClass(name, parent, constructor);
+			return assignClass(name, createClass(name, parent, constructor));
 		}
 	};
 
@@ -147,6 +147,14 @@
 	
 	function isFunc(value) {
 		return (Object.prototype.toString.call(value) === '[object Function]');
+	};
+	
+	function assignClass(name, constructor) {
+		if (name === 0) {
+			return constructor;
+		} else {
+			_global[name] = constructor;
+		}
 	};
 	
 }).call();

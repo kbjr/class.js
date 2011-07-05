@@ -1,7 +1,7 @@
 h1. class.js
 
 Author: James Brumond
-Version: 0.1.1
+Version: 0.1.2
 
 Copyright 2011 James Brumond
 Dual licensed under MIT and GPL
@@ -73,4 +73,18 @@ You can call the super of any method at any time. This is done using the @parent
         this.methodWithArgs.parent(this, arg1);
     }
     
+});</code></pre>
+
+h2. Creating Anonymous Classes
+
+Using class.js, classes don't have to be assigned a name. You can also tell the Class() function to simply return the constructed class function by passing a name value (the first parameter of @Class@) of 0.
+
+<pre><code>// This class will automatically be declared at global.Animal
+Class('Animal', {
+    ...
+});
+
+// This class will not be declared globally, but instead just returned
+var Snake = Class(0).extends(Animal, {
+    ...
 });</code></pre>
