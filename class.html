@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+	
+	<!-- Data Tags -->
+	<title>class.js</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	
+</head>
+<body>
+	
+	<div id="wrapper">
+	
+	</div>
+	
+	<!-- JavaScript Includes -->
+	<script type="text/javascript" charset="utf-8" src="class.js"></script>
+	<script type="text/javascript">
+		
+		/**
+		 * @class  A
+		 */
+		Class('A', {
+			
+			construct: function() {
+				console.log('Building an instance of ' + this.__class__);
+			},
+			
+			method: function() {
+				console.log('Inside A::method as ' + this.__class__);
+			}
+			
+		});
+		
+		/**
+		 * @class  B
+		 */
+		Class('B').extends('A', {
+			
+			method: function() {
+				console.log('Inside B::method as ' + this.__class__);
+				this.method.parent(this);
+			}
+			
+		});
+		
+		/**
+		 * @class  C
+		 */
+		Class('C').extends('B', {
+			
+			method: function() {
+				console.log('Inside C::method as ' + this.__class__);
+				this.method.parent(this);
+			}
+			
+		});
+		
+		/**
+		 * @class  D
+		 */
+		Class('D').extends('C', {
+			
+			method: function() {
+				console.log('Inside D::method as ' + this.__class__);
+				this.method.parent(this);
+			}
+			
+		});
+		
+	</script>
+	
+</body>
+</html>

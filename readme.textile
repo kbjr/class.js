@@ -1,0 +1,76 @@
+h1. class.js
+
+Author: James Brumond
+Version: 0.1.1
+
+Copyright 2011 James Brumond
+Dual licensed under MIT and GPL
+
+h2. Basic Example
+
+<pre><code>Class('Animal', {
+	
+	construct: function(name) {
+		this.name = name;
+	},
+	
+	makeNoise: function(noise) {
+		alert(noise);
+	}
+	
+});
+
+Class('Person').extends('Animal', {
+	
+	speak: function(sayWhat) {
+		this.makeNoise(this, this.name + ' says: "' + sayWhat + '"');
+	}
+	
+});
+
+var james = new Person('James');
+james.makeNoise('Hello, World');</code></pre>
+
+h2. Extending Classes
+
+There are multiple allowed syntaxes for extending classes, which you can choose at your preference.
+
+<pre><code>// Create a base class first
+Class('A', {
+    ...
+});
+
+// Using the extends() syntax
+Class('B').extends(A, {
+    ...
+});
+
+// Using the complex Class() syntax
+Class('B', A, {
+    ...
+});
+
+// Using the extend() syntax
+A.extend('B', {
+    ...
+});</code></pre>
+
+Also note, that when using the extends() syntax or the complex Class() syntax, both a parent class *variable* (@A@) or *string* (@'A'@) is allowed, but if you use the string syntax, the parent class must exist on the global object.
+
+h2. Using Super
+
+You can call the super of any method at any time. This is done using the @parent@ method on your class methods.
+
+<pre><code>Class('A').extends(SomeOtherClass, {
+    
+    method: function() {
+        // Call the method's super
+        this.method.parent(this);
+    },
+    
+    methodWithArgs: function(arg1) {
+        // Call this method's super, passing the argument along
+        this.methodWithArgs.parent(this, arg1);
+    }
+    
+});</code></pre>
