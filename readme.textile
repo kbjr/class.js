@@ -1,7 +1,7 @@
 h1. class.js
 
 Author: James Brumond
-Version: 0.1.2
+Version: 0.1.3
 
 Copyright 2011 James Brumond
 Dual licensed under MIT and GPL

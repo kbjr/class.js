@@ -2,7 +2,7 @@
  * A simple JavaScript class system
  *
  * @author     James Brumond
- * @version    0.1.2
+ * @version    0.1.3
  * @copyright  Copyright 2011 James Brumond
  * @license    Dual licensed under MIT and GPL
  */
@@ -81,6 +81,11 @@
 							var result = scope.parent[method].apply(that, args);
 							that.__scope__ = scope;
 							return result;
+						};
+						self.prototype[method].parentApply = function(that, args) {
+							args = Array.prototype.slice.call(args, 0);
+							args.unshift(that);
+							self.prototype[method].parent.apply(that, args);
 						};
 					}(i));
 				}
