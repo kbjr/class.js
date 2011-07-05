@@ -9,23 +9,23 @@ Dual licensed under MIT and GPL
 h2. Basic Example
 
 <pre><code>Class('Animal', {
-	
-	construct: function(name) {
-		this.name = name;
-	},
-	
-	makeNoise: function(noise) {
-		alert(noise);
-	}
-	
+    
+    construct: function(name) {
+        this.name = name;
+    },
+    
+    makeNoise: function(noise) {
+        alert(noise);
+    }
+    
 });
 
 Class('Person').extends('Animal', {
-	
-	speak: function(sayWhat) {
-		this.makeNoise(this.name + ' says: "' + sayWhat + '"');
-	}
-	
+    
+    speak: function(sayWhat) {
+        this.makeNoise(this.name + ' says: "' + sayWhat + '"');
+    }
+    
 });
 
 var james = new Person('James');
