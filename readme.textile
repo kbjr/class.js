@@ -23,7 +23,7 @@ h2. Basic Example
 Class('Person').extends('Animal', {
 	
 	speak: function(sayWhat) {
-		this.makeNoise(this, this.name + ' says: "' + sayWhat + '"');
+		this.makeNoise(this.name + ' says: "' + sayWhat + '"');
 	}
 	
 });
