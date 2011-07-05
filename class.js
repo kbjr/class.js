@@ -2,7 +2,7 @@
  * A simple JavaScript class system
  *
  * @author     James Brumond
- * @version    0.1.3
+ * @version    0.1.4
  * @copyright  Copyright 2011 James Brumond
  * @license    Dual licensed under MIT and GPL
  */
@@ -11,6 +11,15 @@
 
 	// The class constructor
 	var createClass = function(name, parent, constructor) {
+		
+		// If an array was given for a name, we only want the
+		// actual name value
+		if (typeof name === 'object') {
+			name = name[1] || false;
+			if (! name) {
+				throw new TypeError('Invalid class name value');
+			}
+		}
 
 		// If only one parameter is given, it is a constructor,
 		// not a parent class
@@ -157,8 +166,12 @@
 	function assignClass(name, constructor) {
 		if (name === 0) {
 			return constructor;
-		} else {
+		} else if (Jsk.type.isEnumerable(name) && name.length === 2) {
+			name[0][name[1]] = constructor;
+		} else if (typeof name === 'string') {
 			_global[name] = constructor;
+		} else {
+			throw new TypeError('Invalid class name value');
 		}
 	};
 	
