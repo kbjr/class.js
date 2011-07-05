@@ -166,7 +166,7 @@
 	function assignClass(name, constructor) {
 		if (name === 0) {
 			return constructor;
-		} else if (Jsk.type.isEnumerable(name) && name.length === 2) {
+		} else if (typeof name === 'object' && name.length === 2) {
 			name[0][name[1]] = constructor;
 		} else if (typeof name === 'string') {
 			_global[name] = constructor;
