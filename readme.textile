@@ -76,7 +76,12 @@ You can call the super of any method at any time. This is done using the @parent
     methodWithArgs: function(arg1) {
         // Call this method's super, passing the argument along
         this.methodWithArgs.parent(this, arg1);
-    }
+    },
+
+    anotherMethod: function() {
+        // Call the super, but pass in the arguments object
+        this.anotherMethod.parentApply(this, arguments);
+    },
     
 });</code></pre>
 
@@ -93,3 +98,18 @@ Class('Animal', {
 var Snake = Class(0).extends(Animal, {
     ...
 });</code></pre>
+
+h2. Defining Classes in Non-Global Scope
+
+To define a class, but assign it somewhere other that the global object, you pass in a two key array as the class name. The first value is the object to define the class on, and the second is the class name.
+
+<pre><code>// This is where we will put the class
+var someObject = { };
+
+// Now define the class
+Class([someObject, 'Animal'], {
+    ...
+});
+
+// And use the class
+var animal = new someObject.Animal();</code></pre>
