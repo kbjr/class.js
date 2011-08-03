@@ -60,7 +60,7 @@ A.extend('B', {
     ...
 });</code></pre>
 
-Also note, that when using the extends() syntax or the complex Class() syntax, both a parent class *variable* (@A@) or *string* (@'A'@) is allowed, but if you use the string syntax, the parent class must exist on the global object.
+Also note, that when using the extends() syntax or the complex Class() syntax, both a parent class *variable* (@A@) or *string* (@'A'@) is allowed, but if you use the string syntax, the parent class must exist on the global object. Class.js does *not* support multiple inheritance, nor do I intend to support it in the future.
 
 h2. Using Super
 
