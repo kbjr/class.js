@@ -66,7 +66,7 @@
 		
 		// The class/parent name
 		self.prototype.__class__ = self.__class__ = name;
-		self.prototype.__parent__ = self.__parent__ = parent.__class__ || 'Object';
+		self.prototype.__parent__ = self.__parent__ = parent.__class__ || getNativeClassName(parent);
 		
 		// Expose the parent
 		self.prototype.parent = self.parent = _super;
@@ -159,8 +159,10 @@
 // ----------------------------------------------------------------------------
 //  Helper functions
 	
+	var toString = Object.prototype.toString;
+	
 	function isFunc(value) {
-		return (Object.prototype.toString.call(value) === '[object Function]');
+		return (toString.call(value) === '[object Function]');
 	};
 	
 	function assignClass(name, constructor) {
@@ -173,6 +175,11 @@
 		} else {
 			throw new TypeError('Invalid class name value');
 		}
+	};
+	
+	function getNativeClassName(constructor) {
+		var str = toString.call(new constructor()).split(' ')[1];
+		return str.substr(0, str.length - 1);
 	};
 	
 }).call();
