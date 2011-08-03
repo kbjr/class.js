@@ -2,7 +2,7 @@
  * A simple JavaScript class system
  *
  * @author     James Brumond
- * @version    0.1.4
+ * @version    0.1.5
  * @copyright  Copyright 2011 James Brumond
  * @license    Dual licensed under MIT and GPL
  */
