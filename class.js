@@ -148,7 +148,7 @@
 // ----------------------------------------------------------------------------
 //  Expose
 	
-	_global.Class = function(name, parent, constructor) {
+	function Class(name, parent, constructor) {
 		if (arguments.length === 1) {
 			return new TempClass(name);
 		} else {
@@ -181,6 +181,15 @@
 		var str = toString.call(new constructor()).split(' ')[1];
 		return str.substr(0, str.length - 1);
 	};
+	
+// ------------------------------------------------------------------
+//  Expose
+	
+	try {
+		module.exports.Class = Class;
+	} catch (e) {
+		_global.Class = Class;
+	}
 	
 }).call();
 
