@@ -1,0 +1,16 @@
+{
+  "author": "James Brumond <kbjr14@gmail.com> (http://jbrumond.me)",
+  "name": "classes",
+  "description": "A classical inheritence model",
+  "version": "0.1.6",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kbjr/class.js.git"
+  },
+  "main": "classes.js",
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
