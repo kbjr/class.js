@@ -1,7 +1,7 @@
 {
   "author": "James Brumond <james@jbrumond.me> (http://jbrumond.me)",
   "name": "classes",
-  "description": "A classical inheritence model",
+  "description": "A classical inheritence model with support for mixins",
   "version": "0.2.0",
   "repository": {
     "type": "git",

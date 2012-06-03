@@ -68,6 +68,30 @@
 			
 		});
 		
+		/**
+		 * @mixin  CanFoo
+		 */
+		Class.mixin('CanFoo', {
+			
+			foo: function() {
+				console.log('Foo!');
+			}
+			
+		});
+		
+		/**
+		 * @class  Fooer
+		 */
+		Class('Fooer').uses(['CanFoo'], {
+			
+			bar: function() {
+				console.log('Bar!');
+			}
+			
+		});
+		
+		
+		
 	</script>
 	
 </body>

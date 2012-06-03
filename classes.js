@@ -8,23 +8,22 @@
  */
 (function() {
 	var _global = this;
+	var namespace = _global;
 
 	// The class constructor
-	var createClass = function(name, parent, constructor) {
+	var createClass = function(name, parent, mixins, constructor) {
 		
 		// If an array was given for a name, we only want the
 		// actual name value
-		if (typeof name === 'object') {
+		if (typeof name === 'object' && name) {
 			name = name[1] || false;
 			if (! name) {
 				throw new TypeError('Invalid class name value');
 			}
 		}
 
-		// If only one parameter is given, it is a constructor,
-		// not a parent class
-		if (constructor === void(0)) {
-			constructor = parent;
+		// Default the parent to the global Object
+		if (! parent) {
 			parent = Object;
 		}
 
@@ -47,11 +46,11 @@
 		
 		// Fetch the parent if a string is given
 		if (typeof parent === 'string') {
-			parent = _global[parent];
+			parent = namespace[parent];
 		}
 		
 		// Inherit from the parent if one was given (inheritence model
-		// based on CoffeeScript classes)
+		// based roughly on CoffeeScript classes)
 		var _super = parent.prototype;
 		for (var i in parent) {
 			if (parent.hasOwnProperty(i)) {
@@ -64,9 +63,20 @@
 		ctor.prototype = parent.prototype;
 		self.prototype = new ctor();
 		
+		// Inherit from mixins
+		if (mixins) {
+			for (var i = 0, c = mixins.length; i < c; i++) {
+				if (typeof mixins[i] === 'string') {
+					mixins[i] = namespace[mixins[i]];
+				}
+				mixins[i].mixinTo(self);
+			}
+		}
+		
 		// The class/parent name
 		self.prototype.__class__ = self.__class__ = name;
 		self.prototype.__parent__ = self.__parent__ = parent.__class__ || getNativeClassName(parent);
+		self.prototype.__mixins__ = self.__mixins__ = mixins;
 		
 		// Expose the parent
 		self.prototype.parent = self.parent = _super;
@@ -113,7 +123,7 @@
 		 * @return  void
 		 */
 		self.extend = function(name, constructor) {
-			_global.Class(name, self, constructor);
+			Class(name, self, constructor);
 		};
 
 		/**
@@ -137,7 +147,7 @@
 	};
 
 // ----------------------------------------------------------------------------
-//  Used for the Class(...).extends(...) syntax
+//  Used for the extends() and uses() syntax
 	
 	var TempClass = function(name) {
 		this.parent = null;
@@ -145,7 +155,7 @@
 		this.uses = function(mixins, constructor) {
 			this.mixins.push.apply(this.mixins, mixins);
 			if (constructor) {
-				return assignClass(name,
+				return assignTo(name,
 					createClass(name, this.parent, this.mixins, constructor)
 				);
 			}
@@ -154,7 +164,7 @@
 		this.extends = function(parent, constructor) {
 			this.parent = parent;
 			if (constructor) {
-				return assignClass(name,
+				return assignTo(name,
 					createClass(name, this.parent, this.mixins, constructor)
 				);
 			}
@@ -163,21 +173,44 @@
 	};
 
 // ----------------------------------------------------------------------------
-//  Expose
+//  Main Functions
 	
 	function Class(name, parent, constructor) {
 		if (arguments.length <= 1) {
-			if (name && (typeof name === 'object' || typeof name === 'function')) {
+			if (name && (typeof name === 'object' || isFunc(name))) {
 				return createClass(null, null, name);
 			}
 			return new TempClass(name);
-		} else {
-			return assignClass(name, createClass(name, parent, constructor));
+		} else if (arguments.length === 2) {
+			return assignTo(name,
+				createClass(name, null, [ ], parent)
+			);
 		}
+		return assignTo(name,
+			createClass(name, parent, [ ], constructor)
+		);
+	}
+	
+	Class.mixin = function(name, constructor) {
+		if (arguments.length === 1) {
+			constructor = name;
+			name = null;
+		}
+		return assignTo(name, new Mixin(constructor));
 	};
 	
-	function Mixin(name, constructor) {
-		
+	Class.namespace = function(ns) {
+		namespace = ns ? ns : _global;
+	};
+	
+	function Mixin(constructor) {
+		this.mixinTo = function(func) {
+			for (var i in constructor) {
+				if (constructor.hasOwnProperty(i)) {
+					func.prototype[i] = constructor[i];
+				}
+			}
+		};
 	}
 
 // ----------------------------------------------------------------------------
@@ -187,24 +220,23 @@
 	
 	function isFunc(value) {
 		return (toString.call(value) === '[object Function]');
-	};
+	}
 	
-	function assignClass(name, constructor) {
+	function assignTo(name, constructor) {
 		if (! name) {
 			return constructor;
 		} else if (typeof name === 'object' && name.length === 2) {
 			name[0][name[1]] = constructor;
 		} else if (typeof name === 'string') {
-			_global[name] = constructor;
+			namespace[name] = constructor;
 		} else {
-			throw new TypeError('Invalid class name value');
+			throw new TypeError('Invalid class/mixin name value');
 		}
-	};
+	}
 	
 	function getNativeClassName(constructor) {
-		var str = toString.call(new constructor()).split(' ')[1];
-		return str.substr(0, str.length - 1);
-	};
+		return toString.call(new constructor()).slice(8, -1);
+	}
 	
 // ------------------------------------------------------------------
 //  Expose

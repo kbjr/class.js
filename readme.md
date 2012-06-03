@@ -163,3 +163,43 @@ thing.foo();
 
 Mixins are different from inheritence in the sense that they do no add to the inheritence chain, they simply extend the current class with certain functionality. You cannot use `instanceof` do determine mixin inheritence because classes are not instances of mixins; In fact, there is no such thing as an _instance_ of a mixin, they are just objects.
 
+## Using Namespaces
+
+Before version 0.2.0, all new classes and mixins were defined, by default, on the global object, and if you wanted to define one elsewhere, you would have to use either anonymous classes or the array syntax (eg. `Class([exports, 'Foo'], ...)`). There is now a new way of defining namespaced classes that should prove useful, especially in the case of Node.js.
+
+```javascript
+var Class = require('classes').Class;
+Class.namespace(exports);
+
+Class('Foo', {
+	
+	// ...
+	
+});
+
+var foo = new exports.Foo();
+```
+
+The `Class.namespace()` function sets the default namespace, allowing shorter, more readable class declarations. Simply call `Class.namespace(exports)` at the top of your modules and your classes will automatically be defined in the correct space.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
