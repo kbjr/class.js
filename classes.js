@@ -140,8 +140,25 @@
 //  Used for the Class(...).extends(...) syntax
 	
 	var TempClass = function(name) {
+		this.parent = null;
+		this.mixins = [ ];
+		this.uses = function(mixins, constructor) {
+			this.mixins.push.apply(this.mixins, mixins);
+			if (constructor) {
+				return assignClass(name,
+					createClass(name, this.parent, this.mixins, constructor)
+				);
+			}
+			return this;
+		};
 		this.extends = function(parent, constructor) {
-			return assignClass(name, createClass(name, parent, constructor));
+			this.parent = parent;
+			if (constructor) {
+				return assignClass(name,
+					createClass(name, this.parent, this.mixins, constructor)
+				);
+			}
+			return this;
 		};
 	};
 
@@ -149,12 +166,19 @@
 //  Expose
 	
 	function Class(name, parent, constructor) {
-		if (arguments.length === 1) {
+		if (arguments.length <= 1) {
+			if (name && (typeof name === 'object' || typeof name === 'function')) {
+				return createClass(null, null, name);
+			}
 			return new TempClass(name);
 		} else {
 			return assignClass(name, createClass(name, parent, constructor));
 		}
 	};
+	
+	function Mixin(name, constructor) {
+		
+	}
 
 // ----------------------------------------------------------------------------
 //  Helper functions
@@ -166,7 +190,7 @@
 	};
 	
 	function assignClass(name, constructor) {
-		if (name === 0) {
+		if (! name) {
 			return constructor;
 		} else if (typeof name === 'object' && name.length === 2) {
 			name[0][name[1]] = constructor;

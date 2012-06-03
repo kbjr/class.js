@@ -1,14 +1,9 @@
-h1. class.js
+# class.js
 
-Author: James Brumond
-Version: 0.1.6
+## Basic Example
 
-Copyright 2011 James Brumond
-Dual licensed under MIT and GPL
-
-h2. Basic Example
-
-<pre><code>// A general animal class
+```javascript
+// A general animal class
 Class('Animal', {
     
     construct: function(name) {
@@ -34,13 +29,15 @@ Class('Person').extends('Animal', {
 var james = new Person('James');
 
 // And make them talk
-james.speak('Hello, World');</code></pre>
+james.speak('Hello, World');
+```
 
-h2. Extending Classes
+## Extending Classes
 
 There are multiple allowed syntaxes for extending classes, which you can choose at your preference.
 
-<pre><code>// Create a base class first
+```javascript
+// Create a base class first
 Class('A', {
     ...
 });
@@ -58,15 +55,17 @@ Class('B', A, {
 // Using the extend() syntax
 A.extend('B', {
     ...
-});</code></pre>
+});
+```
 
-Also note, that when using the extends() syntax or the complex Class() syntax, both a parent class *variable* (@A@) or *string* (@'A'@) is allowed, but if you use the string syntax, the parent class must exist on the global object. Class.js does *not* support multiple inheritance, nor do I intend to support it in the future.
+Also note, that when using the extends() syntax or the complex Class() syntax, both a parent class *variable* (`A`) or *string* (`'A'`) is allowed, but if you use the string syntax, the parent class must exist on the global object.
 
-h2. Using Super
+## Using Super
 
-You can call the super of any method at any time. This is done using the @parent@ method on your class methods.
+You can call the super of any method at any time. This is done using the `parent` method on your class methods.
 
-<pre><code>Class('A').extends(SomeOtherClass, {
+```javascript
+Class('A').extends(SomeOtherClass, {
     
     method: function() {
         // Call the method's super
@@ -83,27 +82,31 @@ You can call the super of any method at any time. This is done using the @parent
         this.anotherMethod.parentApply(this, arguments);
     },
     
-});</code></pre>
+});
+```
 
-h2. Creating Anonymous Classes
+## Creating Anonymous Classes
 
 Using class.js, classes don't have to be assigned a name. You can also tell the Class() function to simply return the constructed class function by passing a name value (the first parameter of @Class@) of 0.
 
-<pre><code>// This class will automatically be declared at global.Animal
+```javascript
+// This class will automatically be declared at global.Animal
 Class('Animal', {
     ...
 });
 
 // This class will not be declared globally, but instead just returned
-var Snake = Class(0).extends(Animal, {
+var Snake = Class().extends(Animal, {
     ...
-});</code></pre>
+});
+```
 
-h2. Defining Classes in Non-Global Scope
+## Defining Classes in Non-Global Scope
 
 To define a class, but assign it somewhere other that the global object, you pass in a two key array as the class name. The first value is the object to define the class on, and the second is the class name.
 
-<pre><code>// This is where we will put the class
+```javascript
+// This is where we will put the class
 var someObject = { };
 
 // Now define the class
@@ -112,4 +115,41 @@ Class([someObject, 'Animal'], {
 });
 
 // And use the class
-var animal = new someObject.Animal();</code></pre>
+var animal = new someObject.Animal();
+```
+
+This is equivilent to the following:
+
+```javascript
+someObject.Animal = Class({
+	...
+});
+```
+
+## Using Mixins
+
+As of version 0.2.0, mixins are supported. It should be noted that mixins are *not* the same as sub-class inheritence. A single class can implement both a parent class as well as mixins. Mixins are defined using the `Class.mixin' method.
+
+```javascript
+var canFoo = Class.mixin({
+	
+	foo: function() {
+		alert('Foo!');
+	}
+	
+});
+```
+
+Once created, a mixin is used with the `uses` method when defining a class.
+
+```javascript
+Class('Thing').uses([ canFoo ], {
+	
+	// ...
+	
+});
+
+var thing = new Thing();
+thing.foo();
+```
+
