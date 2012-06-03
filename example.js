@@ -11,9 +11,11 @@ Class('Animal', {
 });
 
 Class.mixin('canFoo', {
+	
 	foo: function() {
-		console.log('Foo!');
+		alert('Foo!');
 	}
+	
 });
 
 Class('Person').extends('Animal').uses('canFoo', {
@@ -25,19 +27,8 @@ Class('Person').extends('Animal').uses('canFoo', {
 });
 
 var james = new Person('James');
+
 james.makeNoise('Hello, World');
-
-Class('Thing').extends('Person').uses([ 'canFoo' ], {
-	
-});
-
-
-
-
-
-
-
-
-
+james.foo();
 
 

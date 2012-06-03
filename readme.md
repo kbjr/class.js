@@ -1,5 +1,13 @@
 # class.js
 
+Simple but powerful classical inheritence for JavaScript.
+
+## Node.js install
+
+```bash
+$ npm install classes
+```
+
 ## Basic Example
 
 ```javascript
