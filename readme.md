@@ -58,7 +58,7 @@ A.extend('B', {
 });
 ```
 
-Also note, that when using the extends() syntax or the complex Class() syntax, both a parent class *variable* (`A`) or *string* (`'A'`) is allowed, but if you use the string syntax, the parent class must exist on the global object.
+Also note, that when using the `extends()` syntax or the complex `Class()` syntax, both a parent class _variable_ (`A`) or _string_ (`'A'`) is allowed, but if you use the string syntax, the parent class must exist on the global object.
 
 ## Using Super
 
@@ -87,7 +87,7 @@ Class('A').extends(SomeOtherClass, {
 
 ## Creating Anonymous Classes
 
-Using class.js, classes don't have to be assigned a name. You can also tell the Class() function to simply return the constructed class function by passing a name value (the first parameter of @Class@) of 0.
+Using class.js, classes don't have to be assigned a name. You can also tell the `Class()` function to simply return the constructed class function by passing a falsey first param (like `Class(null)`) or by simply not giving one as seen below.
 
 ```javascript
 // This class will automatically be declared at global.Animal
@@ -128,7 +128,7 @@ someObject.Animal = Class({
 
 ## Using Mixins
 
-As of version 0.2.0, mixins are supported. It should be noted that mixins are *not* the same as sub-class inheritence. A single class can implement both a parent class as well as mixins. Mixins are defined using the `Class.mixin' method.
+As of version 0.2.0, mixins are supported. It should be noted that mixins are __not__ the same as sub-class inheritence. A single class can implement both a parent class as well as mixins. Mixins are defined using the `Class.mixin` method.
 
 ```javascript
 var canFoo = Class.mixin({
@@ -152,4 +152,6 @@ Class('Thing').uses([ canFoo ], {
 var thing = new Thing();
 thing.foo();
 ```
+
+Mixins are different from inheritence in the sense that they do no add to the inheritence chain, they simply extend the current class with certain functionality. You cannot use `instanceof` do determine mixin inheritence because classes are not instances of mixins; In fact, there is no such thing as an _instance_ of a mixin, they are just objects.
 
