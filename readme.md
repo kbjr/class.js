@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/kbjr/class.js.png)](http://travis-ci.org/kbjr/class.js)
 # class.js
 
 Simple but powerful classical inheritence for JavaScript.
