@@ -178,7 +178,7 @@
 	function Class(name, parent, constructor) {
 		if (arguments.length <= 1) {
 			if (name && (typeof name === 'object' || isFunc(name))) {
-				return createClass(null, null, name);
+				return createClass(null, null, [ ], name);
 			}
 			return new TempClass(name);
 		} else if (arguments.length === 2) {
