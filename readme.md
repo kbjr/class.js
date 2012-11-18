@@ -25,7 +25,7 @@ Class('Animal', {
 });
 
 // Create a class for making people
-Class('Person').extends('Animal', {
+Class('Person').Extends('Animal', {
     
     speak: function(sayWhat) {
         this.makeNoise(this.name + ' says: "' + sayWhat + '"');
@@ -50,8 +50,8 @@ Class('A', {
     ...
 });
 
-// Using the extends() syntax
-Class('B').extends(A, {
+// Using the Extends() syntax
+Class('B').Extends(A, {
     ...
 });
 
@@ -66,14 +66,14 @@ A.extend('B', {
 });
 ```
 
-Also note, that when using the `extends()` syntax or the complex `Class()` syntax, both a parent class _variable_ (`A`) or _string_ (`'A'`) is allowed, but if you use the string syntax, the parent class must exist on the global object.
+Also note, that when using the `Extends()` syntax or the complex `Class()` syntax, both a parent class _variable_ (`A`) or _string_ (`'A'`) is allowed, but if you use the string syntax, the parent class must exist on the namespace object.
 
 ## Using Super
 
 You can call the super of any method at any time. This is done using the `parent` method on your class methods.
 
 ```javascript
-Class('A').extends(SomeOtherClass, {
+Class('A').Extends(SomeOtherClass, {
     
     method: function() {
         // Call the method's super
@@ -104,9 +104,14 @@ Class('Animal', {
 });
 
 // This class will not be declared globally, but instead just returned
-var Snake = Class().extends(Animal, {
+var Snake = Class().Extends(Animal, {
     ...
 });
+
+// A slightly cleaner syntax
+var Snake = Animal.extend({
+    // ...
+})l
 ```
 
 ## Defining Classes in Non-Global Scope
@@ -139,7 +144,7 @@ someObject.Animal = Class({
 As of version 0.2.0, mixins are supported. It should be noted that mixins are __not__ the same as sub-class inheritence. A single class can implement both a parent class as well as mixins. Mixins are defined using the `Class.mixin` method.
 
 ```javascript
-var canFoo = Class.mixin({
+Class.mixin('CanFoo', {
 	
 	foo: function() {
 		alert('Foo!');
@@ -151,7 +156,7 @@ var canFoo = Class.mixin({
 Once created, a mixin is used with the `uses` method when defining a class.
 
 ```javascript
-Class('Thing').uses([ canFoo ], {
+Class('Thing').Uses([ 'CanFoo' ], {
 	
 	// ...
 	
@@ -161,7 +166,7 @@ var thing = new Thing();
 thing.foo();
 ```
 
-Mixins are different from inheritence in the sense that they do no add to the inheritence chain, they simply extend the current class with certain functionality. You cannot use `instanceof` do determine mixin inheritence because classes are not instances of mixins; In fact, there is no such thing as an _instance_ of a mixin, they are just objects.
+Mixins are different from inheritence in the sense that they do no add to the inheritence chain, they simply extend the current class with certain functionality. You cannot use `instanceof` to determine mixin inheritence because classes are not instances of mixins; In fact, there is no such thing as an _instance_ of a mixin, they are just objects.
 
 ## Using Namespaces
 

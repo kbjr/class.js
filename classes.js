@@ -2,10 +2,14 @@
  * A simple JavaScript class system
  *
  * @author     James Brumond
- * @version    0.1.6
- * @copyright  Copyright 2011 James Brumond
+ * @version    0.2.0
+ * @copyright  Copyright 2012 James Brumond
  * @license    Dual licensed under MIT and GPL
  */
+
+/*jshint browser: true, bitwise: false, camelcase: false, eqnull: true, latedef: false,
+  plusplus: false, jquery: true, shadow: true, smarttabs: true, loopfunc: true */
+
 (function() {
 	var _global = this;
 	var namespace = _global;
@@ -31,8 +35,10 @@
 		var self = function() {
 			var inst = this;
 			if (! inst instanceof self) {
-				throw new Error('Classes should be called with the new keyword.');
+				throw new Error('Classes should be invoked with the new keyword.');
 			}
+			// Set the scope for super
+			inst.__scope__ = self.prototype.__scope__;
 			// If a function was given as the constructor, it should
 			// be called every time a new instance is created
 			if (typeof constructor === 'function') {
@@ -58,18 +64,19 @@
 			}
 		}
 		var ctor = function() {
+			this._super = _super;
 			this.constructor = self;
 		};
-		ctor.prototype = parent.prototype;
+		ctor.prototype = _super;
 		self.prototype = new ctor();
 		
 		// Inherit from mixins
 		if (mixins) {
-			for (var i = 0, c = mixins.length; i < c; i++) {
-				if (typeof mixins[i] === 'string') {
-					mixins[i] = namespace[mixins[i]];
+			for (var j = 0, c = mixins.length; j < c; j++) {
+				if (typeof mixins[j] === 'string') {
+					mixins[j] = namespace[mixins[j]];
 				}
-				mixins[i].mixinTo(self);
+				mixins[j].mixinTo(self);
 			}
 		}
 		
@@ -79,34 +86,36 @@
 		self.prototype.__mixins__ = self.__mixins__ = mixins;
 		
 		// Expose the parent
-		self.prototype.parent = self.parent = _super;
-		
-		// For super/parent scoping
+		self.parent = parent;
 		self.prototype.__scope__ = self;
 
 		// If an object was given as the constructor, the properties
 		// should be placed on the prototype
 		if (typeof constructor === 'object') {
-			for (var i in constructor) {
-				self.prototype[i] = constructor[i];
+			for (var k in constructor) {
+				self.prototype[k] = constructor[k];
 				// Build a parent method on all class methods that will allow
 				// calling supers with this.method.parent(this, ...)
-				if (isFunc(self.prototype[i])) {
+				if (isFunc(self.prototype[k])) {
 					(function(method) {
 						self.prototype[method].parent = function(that) {
 							var scope = that.__scope__;
+							if (! scope) {
+								throw new Error('Could not determine super scope. Did you forget to ' +
+									'pass `this` to `.parent`?');
+							}
 							var args = Array.prototype.slice.call(arguments, 1);
 							that.__scope__ = that.__scope__.parent;
-							var result = scope.parent[method].apply(that, args);
+							var result = scope.parent.prototype[method].apply(that, args);
 							that.__scope__ = scope;
 							return result;
 						};
 						self.prototype[method].parentApply = function(that, args) {
 							args = Array.prototype.slice.call(args, 0);
 							args.unshift(that);
-							self.prototype[method].parent.apply(that, args);
+							return self.prototype[method].parent.apply(that, args);
 						};
-					}(i));
+					}(k));
 				}
 			}
 		}
@@ -123,6 +132,9 @@
 		 * @return  void
 		 */
 		self.extend = function(name, constructor) {
+			if (arguments.length === 1) {
+				return Class().Extends(self, name);
+			}
 			Class(name, self, constructor);
 		};
 
@@ -152,7 +164,7 @@
 	var TempClass = function(name) {
 		this.parent = null;
 		this.mixins = [ ];
-		this.uses = function(mixins, constructor) {
+		this.Uses = function(mixins, constructor) {
 			this.mixins.push.apply(this.mixins, mixins);
 			if (constructor) {
 				return assignTo(name,
@@ -161,7 +173,7 @@
 			}
 			return this;
 		};
-		this.extends = function(parent, constructor) {
+		this.Extends = function(parent, constructor) {
 			this.parent = parent;
 			if (constructor) {
 				return assignTo(name,
@@ -170,6 +182,8 @@
 			}
 			return this;
 		};
+		// For backwards-compat
+		this['extends'] = this.Extends;
 	};
 
 // ----------------------------------------------------------------------------
@@ -177,8 +191,8 @@
 	
 	function Class(name, parent, constructor) {
 		if (arguments.length <= 1) {
-			if (name && (typeof name === 'object' || isFunc(name))) {
-				return createClass(null, null, name);
+			if (name && (typeof name === 'object' || isFunc(name)) && ! isArray(name)) {
+				return createClass(null, null, [ ], name);
 			}
 			return new TempClass(name);
 		} else if (arguments.length === 2) {
@@ -221,6 +235,10 @@
 	function isFunc(value) {
 		return (toString.call(value) === '[object Function]');
 	}
+
+	function isArray(value) {
+		return (toString.call(value) === '[object Array]');
+	}
 	
 	function assignTo(name, constructor) {
 		if (! name) {
@@ -248,5 +266,3 @@
 	}
 	
 }).call();
-
-/* End of file class.js */

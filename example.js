@@ -18,7 +18,7 @@ Class.mixin('canFoo', {
 	
 });
 
-Class('Person').extends('Animal').uses('canFoo', {
+Class('Person').Extends('Animal').Uses('canFoo', {
 	
 	speak: function(sayWhat) {
 		this.makeNoise(this, this.name + ' says: "' + sayWhat + '"');
@@ -28,7 +28,7 @@ Class('Person').extends('Animal').uses('canFoo', {
 
 var james = new Person('James');
 
-james.makeNoise('Hello, World');
+james.speak('Hello, World');
 james.foo();
 
 
