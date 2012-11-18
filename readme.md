@@ -120,7 +120,7 @@ var Snake = Class().Extends(Animal, {
 // A slightly cleaner syntax
 var Snake = Animal.extend({
     // ...
-})l
+});
 ```
 
 ## Defining Classes in Non-Global Scope
