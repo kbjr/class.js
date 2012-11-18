@@ -8,9 +8,18 @@ Simple but powerful classical inheritence for JavaScript.
 $ npm install classes
 ```
 
+If using Node.js, you may want to make classes global using code such as this near the beginning of your application.
+
+```javascript
+global.Class = require('classes').Class;
+```
+
 ## Basic Example
 
 ```javascript
+// If using Node.js, the module needs to be required (unless global as shown above)
+var Class = require('classes').Class;
+
 // A general animal class
 Class('Animal', {
     
