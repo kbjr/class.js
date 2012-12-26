@@ -2,7 +2,7 @@
  * A simple JavaScript class system
  *
  * @author     James Brumond
- * @version    0.2.0
+ * @version    0.2.2
  * @copyright  Copyright 2012 James Brumond
  * @license    Dual licensed under MIT and GPL
  */
@@ -39,14 +39,19 @@
 			}
 			// Set the scope for super
 			inst.__scope__ = self.prototype.__scope__;
+			// This allows .apply() type expansion with constructor calls
+			var _args = arguments[0];
+			if (! (_args && _args.__shouldExpand__)) {
+				_args = arguments;
+			}
 			// If a function was given as the constructor, it should
 			// be called every time a new instance is created
 			if (typeof constructor === 'function') {
-				constructor.apply(inst, arguments);
+				constructor.apply(inst, _args);
 			}
 			// If a construct() method exists, it should also be called
 			if (typeof inst.construct === 'function') {
-				inst.construct.apply(inst, arguments);
+				inst.construct.apply(inst, _args);
 			}
 		};
 		
@@ -104,14 +109,14 @@
 								throw new Error('Could not determine super scope. Did you forget to ' +
 									'pass `this` to `.parent`?');
 							}
-							var args = Array.prototype.slice.call(arguments, 1);
+							var args = slice(arguments, 1);
 							that.__scope__ = that.__scope__.parent;
 							var result = scope.parent.prototype[method].apply(that, args);
 							that.__scope__ = scope;
 							return result;
 						};
 						self.prototype[method].parentApply = function(that, args) {
-							args = Array.prototype.slice.call(args, 0);
+							args = slice(args);
 							args.unshift(that);
 							return self.prototype[method].parent.apply(that, args);
 						};
@@ -132,9 +137,6 @@
 		 * @return  void
 		 */
 		self.extend = function(name, constructor) {
-			if (arguments.length === 1) {
-				return Class().Extends(self, name);
-			}
 			Class(name, self, constructor);
 		};
 
@@ -145,7 +147,9 @@
 		 * @return  object
 		 */
 		self.create = function() {
-			return new self();
+			var args = slice(arguments);
+			args.__shouldExpand__ = true;
+			return new self(args);
 		};
 		
 		/**
@@ -216,6 +220,10 @@
 	Class.namespace = function(ns) {
 		namespace = ns ? ns : _global;
 	};
+
+	Class.isClass = function(value) {
+		return isClass(value);
+	};
 	
 	function Mixin(constructor) {
 		this.mixinTo = function(func) {
@@ -238,6 +246,14 @@
 
 	function isArray(value) {
 		return (toString.call(value) === '[object Array]');
+	}
+
+	function isClass(value) {
+		return (typeof value === 'function' && value.toString() === '[object Class]');
+	}
+
+	function slice(value, index) {
+		return Array.prototype.slice.call(value, index);
 	}
 	
 	function assignTo(name, constructor) {

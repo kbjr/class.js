@@ -1,3 +1,4 @@
+
 Class('Animal', {
 	
 	construct: function(name) {
