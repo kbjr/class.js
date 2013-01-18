@@ -2,8 +2,8 @@
  * A simple JavaScript class system
  *
  * @author     James Brumond
- * @version    0.2.2
- * @copyright  Copyright 2012 James Brumond
+ * @version    0.3.0
+ * @copyright  Copyright 2013 James Brumond
  * @license    Dual licensed under MIT and GPL
  */
 
@@ -37,8 +37,6 @@
 			if (! inst instanceof self) {
 				throw new Error('Classes should be invoked with the new keyword.');
 			}
-			// Set the scope for super
-			inst.__scope__ = self.prototype.__scope__;
 			// This allows .apply() type expansion with constructor calls
 			var _args = arguments[0];
 			if (! (_args && _args.__shouldExpand__)) {
@@ -92,7 +90,6 @@
 		
 		// Expose the parent
 		self.parent = parent;
-		self.prototype.__scope__ = self;
 
 		// If an object was given as the constructor, the properties
 		// should be placed on the prototype
@@ -103,22 +100,23 @@
 				// calling supers with this.method.parent(this, ...)
 				if (isFunc(self.prototype[k])) {
 					(function(method) {
-						self.prototype[method].parent = function(that) {
-							var scope = that.__scope__;
-							if (! scope) {
-								throw new Error('Could not determine super scope. Did you forget to ' +
-									'pass `this` to `.parent`?');
-							}
-							var args = slice(arguments, 1);
-							that.__scope__ = that.__scope__.parent;
-							var result = scope.parent.prototype[method].apply(that, args);
-							that.__scope__ = scope;
-							return result;
+						var func = self.prototype[method];
+						func.__scope__ = self;
+
+						func.parent = function(that) {
+							return func.parentApply(that, slice(arguments, 1));
 						};
-						self.prototype[method].parentApply = function(that, args) {
-							args = slice(args);
-							args.unshift(that);
-							return self.prototype[method].parent.apply(that, args);
+
+						func.parentApply = function(that, args) {
+							var oldScope = func.__scope__;
+							var scope = func.__scope__ = func.__scope__.parent;
+							try {
+								return scope.prototype[method].apply(that, args);
+							} finally {
+								// We put this in a finally block to make sure the scope is
+								// always reset, even in the event of an error
+								func.__scope__ = oldScope;
+							}
 						};
 					}(k));
 				}
@@ -220,16 +218,19 @@
 	Class.namespace = function(ns) {
 		namespace = ns ? ns : _global;
 	};
-
-	Class.isClass = function(value) {
-		return isClass(value);
-	};
 	
 	function Mixin(constructor) {
 		this.mixinTo = function(func) {
 			for (var i in constructor) {
 				if (constructor.hasOwnProperty(i)) {
 					func.prototype[i] = constructor[i];
+				}
+			}
+		};
+		this.extend = function(obj) {
+			for (var i in obj) {
+				if (obj.hasOwnProperty(i)) {
+					constructor[i] = obj[i];
 				}
 			}
 		};
@@ -246,10 +247,6 @@
 
 	function isArray(value) {
 		return (toString.call(value) === '[object Array]');
-	}
-
-	function isClass(value) {
-		return (typeof value === 'function' && value.toString() === '[object Class]');
 	}
 
 	function slice(value, index) {
