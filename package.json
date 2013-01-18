@@ -2,7 +2,7 @@
   "author": "James Brumond <james@jbrumond.me> (http://jbrumond.me)",
   "name": "classes",
   "description": "A classical inheritence model with support for mixins",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/kbjr/class.js.git"
