@@ -112,6 +112,8 @@
 							var scope = func.__scope__ = func.__scope__.parent;
 							try {
 								return scope.prototype[method].apply(that, args);
+							} catch (e) {
+								throw e;
 							} finally {
 								// We put this in a finally block to make sure the scope is
 								// always reset, even in the event of an error
