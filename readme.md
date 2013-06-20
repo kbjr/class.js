@@ -113,7 +113,7 @@ Class('Animal', {
 });
 
 // This class will not be declared globally, but instead just returned
-var Snake = Class().Extends(Animal, {
+var Snake = Class.Extends(Animal, {
     ...
 });
 

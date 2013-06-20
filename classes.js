@@ -2,7 +2,7 @@
  * A simple JavaScript class system
  *
  * @author     James Brumond
- * @version    0.3.0
+ * @version    0.3.1
  * @copyright  Copyright 2013 James Brumond
  * @license    Dual licensed under MIT and GPL
  */
@@ -219,6 +219,11 @@
 	
 	Class.namespace = function(ns) {
 		namespace = ns ? ns : _global;
+	};
+
+	Class.Extends = function(parent, constructor) {
+		var ret = new TempClass();
+		return ret.Extends(parent, constructor);
 	};
 	
 	function Mixin(constructor) {
